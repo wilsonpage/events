@@ -139,7 +139,7 @@ if (typeof exports === "object") {
 } else if (typeof define === "function" && define.amd) {
   define(function(){ return Events; });
 } else {
-  window['Events'] = Events;
+  window['events'] = Events;
 }
 
 })();
