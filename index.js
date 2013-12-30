@@ -9,17 +9,14 @@
  * @author Wilson Page <wilson.page@me.com>
  */
 
+;(function() {
+
 /**
  * Locals
  */
 
-var proto = Event.prototype;
-
-/**
- * Expose `Event`
- */
-
-module.exports = Event;
+var proto = Events.prototype;
+var slice = [].slice;
 
 /**
  * Creates a new event emitter
@@ -30,8 +27,8 @@ module.exports = Event;
  * @param  {Object} obj
  * @return {Object}
  */
-function Event(obj) {
-  if (!(this instanceof Event)) return new Event(obj);
+function Events(obj) {
+  if (!(this instanceof Events)) return new Events(obj);
   if (obj) return mixin(obj, proto);
 }
 
@@ -45,7 +42,7 @@ function Event(obj) {
  */
 proto.on = function(name, cb) {
   this._cbs = this._cbs || {};
-  (this._cbs[name] || (this._cbs[name] = [])).unshift(cb);
+  (this._cbs[name] || (this._cbs[name] = [])).push(cb);
   return this;
 };
 
@@ -72,9 +69,22 @@ proto.off = function(name, cb) {
 };
 
 /**
- * Fires an event. Which triggers
+ * Fires an event, triggering
  * all callbacks registered on this
  * event name.
+ *
+ * This lookes a little more
+ * complicated than it may need
+ * to be. This is to ensure callback
+ * lists can be mutable during flush,
+ * without skipping any jobs.
+ *
+ * We take the list of callbacks
+ * and remove, call then push onto
+ * the run list. When there are no
+ * more callbacks left, we replace
+ * the original list with the run
+ * list once all jobs are done.
  *
  * @param  {String} name
  * @return {Event}
@@ -86,9 +96,17 @@ proto.fire = function(options) {
   var cbs = this._cbs[name];
 
   if (cbs) {
-    var args = [].slice.call(arguments, 1);
-    var l = cbs.length;
-    while (l--) cbs[l].apply(ctx, args);
+    var args = slice.call(arguments, 1);
+    var run = [];
+    var cb;
+
+    while (cbs.length) {
+      cb = cbs.shift();
+      cb.apply(ctx, args);
+      run.push(cb);
+    }
+
+    this._cbs[name] = run;
   }
 
   return this;
@@ -111,3 +129,17 @@ function mixin(a, b) {
   for (var key in b) a[key] = b[key];
   return a;
 }
+
+/**
+ * Expose 'Event' (UMD)
+ */
+
+if (typeof exports === "object") {
+  module.exports = Events;
+} else if (typeof define === "function" && define.amd) {
+  define(function(){ return Events; });
+} else {
+  window['Events'] = Events;
+}
+
+})();

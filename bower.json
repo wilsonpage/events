@@ -1,0 +1,17 @@
+{
+  "name": "event",
+  "main": "index.js",
+  "version": "0.2.2",
+  "homepage": "https://github.com/wilsonpage/event",
+  "authors": [
+    "Wilson Page <wilsonpage@me.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -17,10 +17,9 @@
   "author": "Wilson Page",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "~2.11.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.0",
-    "grunt-contrib-watch": "~0.3.1",
-    "buster": "~0.6.2"
+    "mocha-phantomjs": "~3.1.5",
+    "chai": "~1.8.0",
+    "sinon": "~1.7.3",
+    "mocha": "~1.13.0"
   }
 }
