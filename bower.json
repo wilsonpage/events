@@ -1,7 +1,7 @@
 {
   "name": "events",
   "main": "index.js",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "homepage": "https://github.com/wilsonpage/event",
   "authors": [
     "Wilson Page <wilsonpage@me.com>"
