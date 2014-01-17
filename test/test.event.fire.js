@@ -88,4 +88,25 @@ suite('Events#fire()', function(){
 
     emitter.fire({ name: 'eventname', ctx: ctx });
   });
+
+  test('Should be able to define catchErrs method to catch and return errors thrown', function() {
+    var catchFunc = sinon.spy();
+    var emitter = new Events({catchErrs: catchFunc});
+    var errObj = {err: "Arrgh"};
+    var fireArgs = {a: 1, b: "2"};
+    var callback = sinon.spy();
+
+    emitter.on('eventname', callback);
+    emitter.on('eventname', function() {
+      throw errObj;
+    });
+    emitter.on('eventname', callback);
+    emitter.fire('eventname', fireArgs);
+
+    assert(callback.calledTwice);
+    assert(catchFunc.getCall(0).args[0].err, "Arrgh");
+    assert(catchFunc.getCall(0).args[1], 'eventname');
+    assert(catchFunc.getCall(0).args[2], fireArgs);
+  });
+
 });

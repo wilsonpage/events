@@ -94,6 +94,11 @@ proto.fire = function(options) {
   var name = options.name || options;
   var ctx = options.ctx || this;
   var cbs = this._cbs[name];
+  var catchErrs;
+
+  if(typeof(this.catchErrs) === "function") {
+    catchErrs = this.catchErrs;
+  }
 
   if (cbs) {
     var args = slice.call(arguments, 1);
@@ -102,7 +107,15 @@ proto.fire = function(options) {
 
     while (cbs.length) {
       cb = cbs.shift();
-      cb.apply(ctx, args);
+      if(catchErrs) {
+        try {
+          cb.apply(ctx, args);
+        } catch(err) {
+          catchErrs(err, name, args);
+        }
+      } else {
+        cb.apply(ctx, args);
+      }
       run.push(cb);
     }
 
