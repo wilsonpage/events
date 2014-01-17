@@ -72,8 +72,7 @@ suite('Events#fire()', function(){
     emitter.on('eventname', callback2);
     emitter.fire('eventname');
 
-    // TODO: Check Sinon docs for API to do this
-    //assert.callOrder(callback1, callback2);
+    assert(callback1.calledBefore(callback2));
   });
 
   test('Should able to define the context on which to fire', function() {
