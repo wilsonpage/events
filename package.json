@@ -13,7 +13,10 @@
     "Wilson Page",
     "Matt Andrews"
   ],
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wilsonpage/events.git"
+  },
   "author": "Wilson Page",
   "license": "MIT",
   "devDependencies": {
