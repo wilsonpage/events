@@ -1,5 +1,5 @@
 {
-  "name": "events",
+  "name": "evt",
   "version": "0.3.2",
   "description": "Tiny event emitter",
   "main": "index.js",
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/wilsonpage/events.git"
+    "url": "git://github.com/wilsonpage/evt.git"
   },
   "author": "Wilson Page",
   "license": "MIT",

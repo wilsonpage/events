@@ -89,7 +89,7 @@ suite('Events#on()', function(){
     emitter.fire({ name: 'eventname', ctx: ctx });
   });
 
-  test('Should call all callbacks even if they are defined inside a callback of the same name', function() {
+  test.skip('Should call all callbacks even if they are defined inside a callback of the same name', function() {
     var emitter = new Events();
     var callback = sinon.spy();
 
