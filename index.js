@@ -5,7 +5,7 @@
  * A super lightweight
  * event emitter library.
  *
- * @version 0.3.0
+ * @version 0.3.3
  * @author Wilson Page <wilson.page@me.com>
  */
 
