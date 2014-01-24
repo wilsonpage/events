@@ -73,19 +73,6 @@ proto.off = function(name, cb) {
  * all callbacks registered on this
  * event name.
  *
- * This lookes a little more
- * complicated than it may need
- * to be. This is to ensure callback
- * lists can be mutable during flush,
- * without skipping any jobs.
- *
- * We take the list of callbacks
- * and remove, call then push onto
- * the run list. When there are no
- * more callbacks left, we replace
- * the original list with the run
- * list once all jobs are done.
- *
  * @param  {String} name
  * @return {Event}
  */
@@ -97,16 +84,10 @@ proto.fire = function(options) {
 
   if (cbs) {
     var args = slice.call(arguments, 1);
-    var run = [];
-    var cb;
-
-    while (cbs.length) {
-      cb = cbs.shift();
-      cb.apply(ctx, args);
-      run.push(cb);
+    var batch = slice.call(cbs);
+    while (batch.length) {
+      batch.shift().apply(ctx, args);
     }
-
-    this._cbs[name] = run;
   }
 
   return this;
@@ -134,9 +115,9 @@ function mixin(a, b) {
  * Expose 'Event' (UMD)
  */
 
-if (typeof exports === "object") {
+if (typeof exports === 'object') {
   module.exports = Events;
-} else if (typeof define === "function" && define.amd) {
+} else if (typeof define === 'function' && define.amd) {
   define(function(){ return Events; });
 } else {
   window['events'] = Events;
