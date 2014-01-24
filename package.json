@@ -1,8 +1,8 @@
 {
-  "name": "event",
-  "version": "0.3.0",
+  "name": "events",
+  "version": "0.3.2",
   "description": "Tiny event emitter",
-  "main": "lib/event.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
