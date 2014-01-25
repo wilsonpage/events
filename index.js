@@ -94,11 +94,7 @@ proto.fire = function(options) {
   var name = options.name || options;
   var ctx = options.ctx || this;
   var cbs = this._cbs[name];
-  var catchErrs;
-
-  if(typeof(this.catchErrs) === "function") {
-    catchErrs = this.catchErrs;
-  }
+  var catchErrors = this._catchErrors;
 
   if (cbs) {
     var args = slice.call(arguments, 1);
@@ -107,11 +103,13 @@ proto.fire = function(options) {
 
     while (cbs.length) {
       cb = cbs.shift();
-      if(catchErrs) {
+      if(catchErrors) {
         try {
           cb.apply(ctx, args);
         } catch(err) {
-          catchErrs(err, name, args);
+          setTimeout(function() {
+            throw err;
+          });
         }
       } else {
         cb.apply(ctx, args);
@@ -123,6 +121,16 @@ proto.fire = function(options) {
   }
 
   return this;
+};
+
+/**
+ * Enable functionality to catch any errors thrown and prevent it from
+ * effecting other events currently being fired.
+ *
+ * @param {Boolean} enabled
+ */
+proto.catchErrors = function(enabled) {
+  this._catchErrors = enabled;
 };
 
 /**

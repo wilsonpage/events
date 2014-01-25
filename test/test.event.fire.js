@@ -89,24 +89,33 @@ suite('Events#fire()', function(){
     emitter.fire({ name: 'eventname', ctx: ctx });
   });
 
-  test('Should be able to define catchErrs method to catch and return errors thrown', function() {
-    var catchFunc = sinon.spy();
-    var emitter = new Events({catchErrs: catchFunc});
-    var errObj = {err: "Arrgh"};
-    var fireArgs = {a: 1, b: "2"};
+  test('Should be able to enable catchErrors method to catch errors thrown', function(done) {
     var callback = sinon.spy();
+    var thrownMessage = "fire-catch-arrgh";
+    var emitter = new Events();
+    emitter.catchErrors(true);
+
+    // HACK: Mocha defines a window.onerror listener.
+    var mochaOnError = window.onerror;
+    window.onerror = function(message) {
+      // We only want to end the tests and cancel the error if its the error
+      // we expect.
+      var rslt = (thrownMessage === message);
+      if(rslt) {
+        assert(rslt);
+        done();
+        return true;
+      }
+      mochaOnError.apply(this, arguments);
+    };
 
     emitter.on('eventname', callback);
     emitter.on('eventname', function() {
-      throw errObj;
+      throw thrownMessage;
     });
     emitter.on('eventname', callback);
-    emitter.fire('eventname', fireArgs);
-
+    emitter.fire('eventname');
     assert(callback.calledTwice);
-    assert(catchFunc.getCall(0).args[0].err, "Arrgh");
-    assert(catchFunc.getCall(0).args[1], 'eventname');
-    assert(catchFunc.getCall(0).args[2], fireArgs);
   });
 
 });
