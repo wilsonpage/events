@@ -89,11 +89,11 @@ suite('Events#fire()', function(){
     emitter.fire({ name: 'eventname', ctx: ctx });
   });
 
-  test('Should be able to enable catchErrors method to catch errors thrown', function(done) {
+  test('Should be able to set Evt#catch to catch errors thrown', function(done) {
     var callback = sinon.spy();
     var thrownMessage = "fire-catch-arrgh";
     var emitter = new Events();
-    emitter.catchErrors(true);
+    emitter.catch = true;
 
     // HACK: Mocha defines a window.onerror listener.
     var mochaOnError = window.onerror;
@@ -101,7 +101,7 @@ suite('Events#fire()', function(){
       // We only want to end the tests and cancel the error if its the error
       // we expect.
       var rslt = (thrownMessage === message);
-      if(rslt) {
+      if (rslt) {
         assert(rslt);
         done();
         return true;
