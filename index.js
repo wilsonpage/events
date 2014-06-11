@@ -1,6 +1,6 @@
 
 /**
- * Event
+ * Evt
  *
  * A super lightweight
  * event emitter library.
@@ -47,6 +47,25 @@ proto.on = function(name, cb) {
 };
 
 /**
+ * Attach a callback that once
+ * called, detaches itself.
+ *
+ * TODO: Implement `.off()` to work
+ * with `once()` callbacks.
+ *
+ * @param  {String}   name
+ * @param  {Function} cb
+ * @public
+ */
+proto.once = function(name, cb) {
+  this.on(name, one);
+  function one() {
+    cb.apply(this, arguments);
+    this.off(name, one);
+  }
+};
+
+/**
  * Removes a single callback,
  * or all callbacks associated
  * with the passed event name.
@@ -58,13 +77,13 @@ proto.on = function(name, cb) {
 proto.off = function(name, cb) {
   this._cbs = this._cbs || {};
 
-  if (!name) return this._cbs = {};
-  if (!cb) return delete this._cbs[name];
+  if (!name) { this._cbs = {}; return; }
+  if (!cb) { return delete this._cbs[name]; }
 
   var cbs = this._cbs[name] || [];
   var i;
 
-  while (cbs && ~(i = cbs.indexOf(cb))) cbs.splice(i, 1);
+  while (cbs && ~(i = cbs.indexOf(cb))) { cbs.splice(i, 1); }
   return this;
 };
 
@@ -76,21 +95,30 @@ proto.off = function(name, cb) {
  * @param  {String} name
  * @return {Event}
  */
-proto.fire = function(options) {
-  this._cbs = this._cbs || {};
+proto.fire = proto.emit = function(options) {
+  var cbs = this._cbs = this._cbs || {};
   var name = options.name || options;
+  var batch = (cbs[name] || []).concat(cbs['*'] || []);
   var ctx = options.ctx || this;
-  var cbs = this._cbs[name];
 
-  if (cbs) {
+  if (batch.length) {
+    this._fireArgs = arguments;
     var args = slice.call(arguments, 1);
-    var batch = slice.call(cbs);
     while (batch.length) {
       batch.shift().apply(ctx, args);
     }
   }
 
   return this;
+};
+
+proto.firer = function(name) {
+  var self = this;
+  return function() {
+    var args = slice.call(arguments);
+    args.unshift(name);
+    self.fire.apply(self, args);
+  };
 };
 
 /**
@@ -120,7 +148,7 @@ if (typeof exports === 'object') {
 } else if (typeof define === 'function' && define.amd) {
   define(function(){ return Events; });
 } else {
-  window['evt'] = Events;
+  window.evt = Events;
 }
 
 })();
