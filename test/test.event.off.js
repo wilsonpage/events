@@ -64,7 +64,7 @@ suite('Events#off()', function(){
     var caught = false;
 
     emitter
-      .on('eventname', callback.bind('whatever');
+      .on('eventname', callback.bind('whatever'));
 
     try {
       emitter
