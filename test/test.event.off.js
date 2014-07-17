@@ -57,4 +57,21 @@ suite('Events#off()', function(){
     assert(!callback.called);
     assert(!callback2.called);
   });
+
+  test("Should throw an error if you try to remove a callback that doesn't exist", function() {
+    var emitter = new Events();
+    var callback = sinon.spy();
+    var caught = false;
+
+    emitter
+      .on('eventname', callback.bind('whatever'));
+
+    try {
+      emitter
+        .off('eventname', callback);
+    } catch(e) {
+      caught = true;
+    }
+    assert(caught);
+  });
 });

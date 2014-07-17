@@ -83,6 +83,7 @@ proto.off = function(name, cb) {
   var cbs = this._cbs[name] || [];
   var i;
 
+  if (!~cbs.indexOf(cb)) throw new Error('Unable to remove event listener for event '+name);
   while (cbs && ~(i = cbs.indexOf(cb))) { cbs.splice(i, 1); }
   return this;
 };
