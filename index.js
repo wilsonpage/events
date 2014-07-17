@@ -81,9 +81,11 @@ proto.off = function(name, cb) {
   if (!cb) { return delete this._cbs[name]; }
 
   var cbs = this._cbs[name] || [];
+  var l = cbs.length;
   var i;
 
   while (cbs && ~(i = cbs.indexOf(cb))) { cbs.splice(i, 1); }
+  if (l === cbs.length) throw new Error('Unable to remove event listener');
   return this;
 };
 
